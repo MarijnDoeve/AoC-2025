@@ -8,6 +8,17 @@ import (
 	"strconv"
 )
 
+func mod(a, b int) int {
+	return (a%b + b) % b
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -1 * x
+	}
+	return x
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -29,40 +40,40 @@ func main() {
 	}
 
 	dial := 50
-	count := 0
+	count1 := 0
 	count2 := 0
 
 	for _, l := range lines {
-		if len(l) > 0 {
-			firstChar := string(l[0])
-			rest, err := strconv.Atoi(l[1:])
-			if err != nil {
-				log.Fatal(err)
-			}
 
-			if firstChar == "R" {
-				dial += rest
-			} else {
-				dial -= rest
-			}
+		direction := string(l[0])
+		num, err := strconv.Atoi(l[1:])
+		if err != nil {
+			log.Fatal(err)
+		}
 
-			for dial > 99 {
-				dial -= 100
-				count2++
+		if direction == "R" {
+			dial += num
+			count2 += dial / 100
+			dial = mod(dial, 100)
+		} else {
+			if dial-num < 0 {
+				count2 += abs((100 + dial - num) / 100)
+				if dial != 0 {
+					count2++
+				}
 			}
-
-			for dial < 0 {
-				dial += 100
-				count2++
-			}
-
+			dial = mod(dial-num, 100)
 			if dial == 0 {
-				count++
+				count2++
 			}
+		}
+
+		if dial == 0 {
+			count1++
 		}
 
 	}
 
-	fmt.Println("Count1:", count)
+	fmt.Println("Count1:", count1)
 	fmt.Println("Count2:", count2)
 }
