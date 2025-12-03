@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -21,28 +22,39 @@ func main() {
 
 		lines = append(lines, line)
 	}
-	sum := 0
+
+	sum2 := 0
+	sum12 := 0
 	for _, line := range lines {
-		largest1 := 0
-		largest2 := 0
-
-		largest1_pos := 0
-
-		for i, digit := range line[:len(line)-1] {
-			int_digit := int(digit - '0')
-			if int_digit > largest1 {
-				largest1 = int_digit
-				largest1_pos = i
-			}
-		}
-
-		for _, digit := range line[largest1_pos+1:] {
-			int_digit := int(digit - '0')
-			if int_digit > largest2 {
-				largest2 = int_digit
-			}
-		}
-		sum += largest1*10 + largest2
+		sum2 += findLargestOfSize(line, 2)
+		sum12 += findLargestOfSize(line, 12)
 	}
-	fmt.Println(sum)
+	fmt.Println("Part 1:", sum2)
+	fmt.Println("Part 2:", sum12)
+}
+
+func findLargestOfSize(line string, size int) int {
+	foundNumber := ""
+	startPos := 0
+
+	for i := range size {
+		endPos := len(line) - size + i + 1
+
+		largest := 0
+		largestPos := 0
+
+		for j, digit := range line[startPos:endPos] {
+			intDigit := int(digit - '0')
+			if intDigit > largest {
+				largest = intDigit
+				largestPos = j
+			}
+		}
+
+		foundNumber += strconv.Itoa(largest)
+		startPos += largestPos + 1
+	}
+
+	result, _ := strconv.Atoi(foundNumber)
+	return result
 }
