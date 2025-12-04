@@ -33,33 +33,39 @@ func main() {
 
 	total := 0
 
-	for y, row := range grid {
-		for x, value := range row {
-			if !value {
-				continue
-			}
+	for {
+		removed := false
+		for y, row := range grid {
+			for x, value := range row {
+				if !value {
+					continue
+				}
 
-			adjecentRolls := 0
+				adjecentRolls := 0
 
-			// check neighbours
-			for i := max(0, y-1); i <= min(maxY, y+1); i++ {
-				for j := max(0, x-1); j <= min(maxX, x+1); j++ {
-					// skip middle
-					if i == y && j == x {
-						continue
-					}
+				for i := max(0, y-1); i <= min(maxY, y+1); i++ {
+					for j := max(0, x-1); j <= min(maxX, x+1); j++ {
+						if i == y && j == x {
+							continue
+						}
 
-					if grid[i][j] {
-						adjecentRolls++
+						if grid[i][j] {
+							adjecentRolls++
+						}
 					}
 				}
-			}
 
-			if adjecentRolls < 4 {
-				total++
+				if adjecentRolls < 4 {
+					total++
+					grid[y][x] = false
+					removed = true
+				}
 			}
 		}
-	}
 
-	fmt.Println("Part 1:", total)
+		if !removed {
+			break
+		}
+	}
+	fmt.Println("Part 2:", total)
 }
